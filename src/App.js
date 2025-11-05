@@ -3,8 +3,14 @@ import Header from './components/Layout/Header';
 import Navigation from './components/Layout/Navigation';
 import DashboardView from './components/Dashboard/DashboardView';
 import SimulationView from './components/Simulation/SimulationView';
+import SettingsView from './components/Settings/SettingsView';
 import { useImmobilien } from './hooks/useImmobilien';
-import { TABS } from './utils/constants';
+
+const TABS = {
+  DASHBOARD: 'dashboard',
+  SIMULATION: 'simulation',
+  SETTINGS: 'settings'
+};
 
 function App() {
   const [activeTab, setActiveTab] = useState(TABS.DASHBOARD);
@@ -125,14 +131,18 @@ function App() {
         {activeTab === TABS.SIMULATION && (
           <SimulationView immobilien={immobilien} />
         )}
+
+        {activeTab === TABS.SETTINGS && (
+          <SettingsView />
+        )}
       </div>
 
       {/* Footer */}
       <footer className="border-t border-slate-800 mt-12">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between text-sm text-slate-400">
-            <p>ImmoCal Pro - Schweizer Immobilien Rendite Rechner</p>
-            <p>© 2024 - Made with ❤️ for Swiss Real Estate</p>
+            <p>ImmoCal Pro - Schweizer Immobilien</p>
+            <p>© 2024 - Made with ❤️ by mediapuls</p>
           </div>
         </div>
       </footer>

@@ -11,6 +11,8 @@ class Immobilie {
         leerstand, tilgung,
         steuersatz, abschreibung_prozent, abschreibung_jahre,
         notizen, tags,
+        anzahl_zimmer, quadratmeter, strasse, plz, ort, typ,
+        stockwerk, baujahr, parkplaetze, balkon, garten, lift, keller, renovation,
         erstellt_am, aktualisiert_am
       FROM immobilien
       ORDER BY erstellt_am DESC
@@ -39,9 +41,12 @@ class Immobilie {
         leerstand, tilgung,
         steuersatz, abschreibung_prozent, abschreibung_jahre,
         notizen, tags,
+        anzahl_zimmer, quadratmeter, strasse, plz, ort, typ,
+        stockwerk, baujahr, parkplaetze, balkon, garten, lift, keller, renovation,
         erstellt_am, aktualisiert_am
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, 
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19,
+        $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
       )
       RETURNING *
@@ -66,7 +71,21 @@ class Immobilie {
       this.parseDecimal(data.abschreibungProzent) || 2.5,
       parseInt(data.abschreibungJahre) || 40,
       data.notizen || null,
-      data.tags || null
+      data.tags || null,
+      this.parseDecimal(data.anzahlZimmer),
+      this.parseDecimal(data.quadratmeter),
+      data.strasse || null,
+      data.plz || null,
+      data.ort || null,
+      data.typ || null,
+      data.stockwerk || null,
+      parseInt(data.baujahr) || null,
+      parseInt(data.parkplaetze) || null,
+      !!data.balkon,
+      !!data.garten,
+      !!data.lift,
+      !!data.keller,
+      data.renovation || null
     ];
     
     const result = await pool.query(query, values);
@@ -94,6 +113,20 @@ class Immobilie {
         abschreibung_jahre = $17,
         notizen = $18,
         tags = $19,
+        anzahl_zimmer = $20,
+        quadratmeter = $21,
+        strasse = $22,
+        plz = $23,
+        ort = $24,
+        typ = $25,
+        stockwerk = $26,
+        baujahr = $27,
+        parkplaetze = $28,
+        balkon = $29,
+        garten = $30,
+        lift = $31,
+        keller = $32,
+        renovation = $33,
         aktualisiert_am = CURRENT_TIMESTAMP
       WHERE id = $1
       RETURNING *
@@ -118,7 +151,21 @@ class Immobilie {
       this.parseDecimal(data.abschreibungProzent) || 2.5,
       parseInt(data.abschreibungJahre) || 40,
       data.notizen || null,
-      data.tags || null
+      data.tags || null,
+      this.parseDecimal(data.anzahlZimmer),
+      this.parseDecimal(data.quadratmeter),
+      data.strasse || null,
+      data.plz || null,
+      data.ort || null,
+      data.typ || null,
+      data.stockwerk || null,
+      parseInt(data.baujahr) || null,
+      parseInt(data.parkplaetze) || null,
+      !!data.balkon,
+      !!data.garten,
+      !!data.lift,
+      !!data.keller,
+      data.renovation || null
     ];
     
     const result = await pool.query(query, values);
@@ -159,6 +206,20 @@ class Immobilie {
       abschreibungJahre: row.abschreibung_jahre || 40,
       notizen: row.notizen || '',
       tags: row.tags || [],
+      anzahlZimmer: row.anzahl_zimmer ? row.anzahl_zimmer.toString() : '',
+      quadratmeter: row.quadratmeter ? row.quadratmeter.toString() : '',
+      strasse: row.strasse || '',
+      plz: row.plz || '',
+      ort: row.ort || '',
+      typ: row.typ || '',
+      stockwerk: row.stockwerk || '',
+      baujahr: row.baujahr ? row.baujahr.toString() : '',
+      parkplaetze: row.parkplaetze ? row.parkplaetze.toString() : '',
+      balkon: row.balkon || false,
+      garten: row.garten || false,
+      lift: row.lift || false,
+      keller: row.keller || false,
+      renovation: row.renovation || '',
       erstelltAm: row.erstellt_am,
       aktualisiertAm: row.aktualisiert_am
     };

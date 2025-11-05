@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Edit2, Trash2, MapPin, TrendingUp, TrendingDown, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { Edit2, Trash2, MapPin, TrendingUp, TrendingDown, MessageSquare, ChevronDown, ChevronUp, Home, Calendar, Maximize2 } from 'lucide-react';
 import { formatCurrency, formatPercent } from '../../utils/formatters';
 import { useKennzahlen } from '../../hooks/useKennzahlen';
 
@@ -12,21 +12,79 @@ const ImmobilienCard = ({ immobilie, onEdit, onDelete }) => {
   const cashflowPositive = kennzahlen.cashflow >= 0;
   const hasNotizen = immobilie.notizen && immobilie.notizen.trim().length > 0;
 
+  // Vollständige Adresse generieren
+  const getFullAddress = () => {
+    if (immobilie.adresse) return immobilie.adresse;
+    const parts = [];
+    if (immobilie.strasse) parts.push(immobilie.strasse);
+    if (immobilie.plz && immobilie.ort) parts.push(`${immobilie.plz} ${immobilie.ort}`);
+    else if (immobilie.ort) parts.push(immobilie.ort);
+    return parts.join(', ');
+  };
+
+  const fullAddress = getFullAddress();
+
   return (
     <div className="bg-slate-800 rounded-lg border border-slate-700 hover:border-slate-600 transition-all overflow-hidden">
       {/* Header */}
       <div className="p-4 border-b border-slate-700">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-white mb-1">
-              {immobilie.name || 'Unbenannte Immobilie'}
-            </h3>
-            {immobilie.adresse && (
-              <div className="flex items-center gap-1 text-sm text-slate-400">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-lg font-semibold text-white">
+                {immobilie.name || 'Unbenannte Immobilie'}
+              </h3>
+              {immobilie.typ && (
+                <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 text-xs rounded border border-blue-500/20">
+                  {immobilie.typ}
+                </span>
+              )}
+            </div>
+            
+            {fullAddress && (
+              <div className="flex items-center gap-1 text-sm text-slate-400 mb-1">
                 <MapPin className="w-3 h-3" />
-                <span>{immobilie.adresse}</span>
+                <span>{fullAddress}</span>
               </div>
             )}
+
+            <div className="flex flex-wrap gap-2 text-xs text-slate-400 mt-2">
+              {immobilie.anzahlZimmer && (
+                <span className="flex items-center gap-1">
+                  <Home className="w-3 h-3" />
+                  {immobilie.anzahlZimmer} Zi.
+                </span>
+              )}
+              {immobilie.quadratmeter && (
+                <span className="flex items-center gap-1">
+                  <Maximize2 className="w-3 h-3" />
+                  {immobilie.quadratmeter} m²
+                </span>
+              )}
+              {immobilie.baujahr && (
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  {immobilie.baujahr}
+                </span>
+              )}
+              {immobilie.stockwerk && (
+                <span>• {immobilie.stockwerk}</span>
+              )}
+            </div>
+
+            {/* Ausstattungs-Icons */}
+            {(immobilie.balkon || immobilie.garten || immobilie.lift || immobilie.keller || immobilie.parkplaetze) && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {immobilie.balkon && <span className="px-2 py-0.5 bg-slate-700 text-slate-300 text-xs rounded">🪴 Balkon</span>}
+                {immobilie.garten && <span className="px-2 py-0.5 bg-slate-700 text-slate-300 text-xs rounded">🌳 Garten</span>}
+                {immobilie.lift && <span className="px-2 py-0.5 bg-slate-700 text-slate-300 text-xs rounded">🛗 Lift</span>}
+                {immobilie.keller && <span className="px-2 py-0.5 bg-slate-700 text-slate-300 text-xs rounded">📦 Keller</span>}
+                {immobilie.parkplaetze && immobilie.parkplaetze > 0 && (
+                  <span className="px-2 py-0.5 bg-slate-700 text-slate-300 text-xs rounded">🚗 {immobilie.parkplaetze}x PP</span>
+                )}
+              </div>
+            )}
+
             {hasNotizen && (
               <div className="flex items-center gap-1 text-xs text-blue-400 mt-1">
                 <MessageSquare className="w-3 h-3" />

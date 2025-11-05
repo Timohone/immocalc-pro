@@ -1,6 +1,11 @@
 import React from 'react';
-import { Building, TrendingUp } from 'lucide-react';
-import { TABS } from '../../utils/constants';
+import { Building, TrendingUp, Settings } from 'lucide-react';
+
+const TABS = {
+  DASHBOARD: 'dashboard',
+  SIMULATION: 'simulation',
+  SETTINGS: 'settings'
+};
 
 const Navigation = ({ activeTab, onTabChange }) => {
   const tabs = [
@@ -15,6 +20,12 @@ const Navigation = ({ activeTab, onTabChange }) => {
       label: 'Simulation',
       icon: TrendingUp,
       description: 'Portfolio analysieren'
+    },
+    {
+      id: TABS.SETTINGS,
+      label: 'Einstellungen',
+      icon: Settings,
+      description: 'Standard-Werte konfigurieren'
     }
   ];
 

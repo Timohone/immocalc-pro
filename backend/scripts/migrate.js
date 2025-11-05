@@ -56,7 +56,31 @@ const migrate = async () => {
       console.log('ℹ️  Tags Spalte existiert bereits');
     }
 
-    // 4. Historische Daten Tabelle
+    // 4. NEUE IMMOBILIEN DETAIL FELDER
+    try {
+      await client.query(`
+        ALTER TABLE immobilien 
+        ADD COLUMN IF NOT EXISTS anzahl_zimmer DECIMAL(3, 1),
+        ADD COLUMN IF NOT EXISTS quadratmeter DECIMAL(8, 2),
+        ADD COLUMN IF NOT EXISTS strasse VARCHAR(255),
+        ADD COLUMN IF NOT EXISTS plz VARCHAR(10),
+        ADD COLUMN IF NOT EXISTS ort VARCHAR(255),
+        ADD COLUMN IF NOT EXISTS typ VARCHAR(50),
+        ADD COLUMN IF NOT EXISTS stockwerk VARCHAR(50),
+        ADD COLUMN IF NOT EXISTS baujahr INTEGER,
+        ADD COLUMN IF NOT EXISTS parkplaetze INTEGER,
+        ADD COLUMN IF NOT EXISTS balkon BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS garten BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS lift BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS keller BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS renovation TEXT;
+      `);
+      console.log('✅ Immobilien-Detail Spalten hinzugefügt');
+    } catch (err) {
+      console.log('ℹ️  Immobilien-Detail Spalten existieren bereits');
+    }
+
+    // 5. Historische Daten Tabelle
     await client.query(`
       CREATE TABLE IF NOT EXISTS immobilie_historie (
         id SERIAL PRIMARY KEY,
@@ -70,7 +94,7 @@ const migrate = async () => {
     `);
     console.log('✅ Historie Tabelle erstellt');
 
-    // 5. Szenarien Tabelle
+    // 6. Szenarien Tabelle
     await client.query(`
       CREATE TABLE IF NOT EXISTS szenarien (
         id SERIAL PRIMARY KEY,
@@ -83,7 +107,7 @@ const migrate = async () => {
     `);
     console.log('✅ Szenarien Tabelle erstellt');
 
-    // 6. Marktdaten Tabelle
+    // 7. Marktdaten Tabelle
     await client.query(`
       CREATE TABLE IF NOT EXISTS marktdaten (
         id SERIAL PRIMARY KEY,
@@ -99,13 +123,16 @@ const migrate = async () => {
     `);
     console.log('✅ Marktdaten Tabelle erstellt');
 
-    // 7. Indizes erstellen
+    // 8. Indizes erstellen
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_historie_immobilie ON immobilie_historie(immobilie_id);
       CREATE INDEX IF NOT EXISTS idx_historie_datum ON immobilie_historie(datum);
       CREATE INDEX IF NOT EXISTS idx_szenarien_immobilie ON szenarien(immobilie_id);
       CREATE INDEX IF NOT EXISTS idx_marktdaten_region ON marktdaten(region);
       CREATE INDEX IF NOT EXISTS idx_marktdaten_plz ON marktdaten(plz);
+      CREATE INDEX IF NOT EXISTS idx_immobilien_typ ON immobilien(typ);
+      CREATE INDEX IF NOT EXISTS idx_immobilien_ort ON immobilien(ort);
+      CREATE INDEX IF NOT EXISTS idx_immobilien_plz ON immobilien(plz);
     `);
     console.log('✅ Indizes erstellt');
 
@@ -120,6 +147,8 @@ const migrate = async () => {
     console.log('   ✅ Historische Daten');
     console.log('   ✅ Was-wäre-wenn Szenarien');
     console.log('   ✅ Marktdaten-Vergleich');
+    console.log('   ✅ Immobilien-Details (Zimmer, m², Adresse, etc.)');
+    console.log('   ✅ Ausstattungsmerkmale (Balkon, Garten, Lift, etc.)');
     console.log('');
     
     process.exit(0);

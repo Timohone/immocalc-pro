@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { 
   berechneKennzahlen, 
   berechnePortfolioStatistiken,
-  simuliereEntwicklung,
+  simuliere10Jahre,
   bewerteKennzahl 
 } from '../services/calculationService';
 
@@ -137,7 +137,7 @@ export const useSimulation = (immobilie, jahre = 10, mietsteigerung = 2, wertste
    */
   const simulation = useMemo(() => {
     if (!immobilie) return null;
-    return simuliereEntwicklung(immobilie, jahre, mietsteigerung, wertsteigerung);
+    return simuliere10Jahre(immobilie, jahre, mietsteigerung, wertsteigerung);
   }, [immobilie, jahre, mietsteigerung, wertsteigerung]);
 
   /**

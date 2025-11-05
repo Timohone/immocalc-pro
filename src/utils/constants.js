@@ -16,13 +16,44 @@ export const DEFAULT_IMMOBILIE = {
   ruecklagen: '',
   leerstand: '',
   tilgung: '',
-  // NEUE FELDER
+  // STEUERLICHE FELDER
   steuersatz: '',
   abschreibungProzent: '2.5',
   abschreibungJahre: '40',
   notizen: '',
-  tags: []
+  tags: [],
+  // IMMOBILIEN DETAILS
+  anzahlZimmer: '',
+  quadratmeter: '',
+  strasse: '',
+  plz: '',
+  ort: '',
+  typ: '',
+  stockwerk: '',
+  baujahr: '',
+  parkplaetze: '',
+  balkon: false,
+  garten: false,
+  lift: false,
+  keller: false,
+  renovation: ''
 };
+
+// Immobilien Typen
+export const IMMOBILIEN_TYPEN = [
+  'Wohnung',
+  'Einfamilienhaus',
+  'Mehrfamilienhaus',
+  'Reihenhaus',
+  'Doppelhaushälfte',
+  'Studio',
+  'Loft',
+  'Maisonette',
+  'Penthouse',
+  'Gewerbe',
+  'Büro',
+  'Sonstiges'
+];
 
 // Typische Prozentwerte für Schweizer Immobilien
 export const TYPICAL_VALUES = {

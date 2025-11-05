@@ -63,7 +63,7 @@ const initDatabase = async () => {
 
     await dbClient.connect();
 
-    // Tabelle erstellen
+    // Tabelle erstellen mit ALLEN Feldern
     const createTableQuery = `
       CREATE TABLE IF NOT EXISTS immobilien (
         id VARCHAR(255) PRIMARY KEY,
@@ -80,6 +80,25 @@ const initDatabase = async () => {
         ruecklagen DECIMAL(15, 2),
         leerstand DECIMAL(5, 2),
         tilgung DECIMAL(5, 2),
+        steuersatz DECIMAL(5, 2),
+        abschreibung_prozent DECIMAL(5, 2),
+        abschreibung_jahre INTEGER,
+        notizen TEXT,
+        tags TEXT[],
+        anzahl_zimmer DECIMAL(3, 1),
+        quadratmeter DECIMAL(8, 2),
+        strasse VARCHAR(255),
+        plz VARCHAR(10),
+        ort VARCHAR(255),
+        typ VARCHAR(50),
+        stockwerk VARCHAR(50),
+        baujahr INTEGER,
+        parkplaetze INTEGER,
+        balkon BOOLEAN DEFAULT FALSE,
+        garten BOOLEAN DEFAULT FALSE,
+        lift BOOLEAN DEFAULT FALSE,
+        keller BOOLEAN DEFAULT FALSE,
+        renovation TEXT,
         erstellt_am TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         aktualisiert_am TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
@@ -91,8 +110,11 @@ const initDatabase = async () => {
     // Index erstellen für bessere Performance
     await dbClient.query(`
       CREATE INDEX IF NOT EXISTS idx_immobilien_name ON immobilien(name);
+      CREATE INDEX IF NOT EXISTS idx_immobilien_typ ON immobilien(typ);
+      CREATE INDEX IF NOT EXISTS idx_immobilien_ort ON immobilien(ort);
+      CREATE INDEX IF NOT EXISTS idx_immobilien_plz ON immobilien(plz);
     `);
-    console.log('✅ Index erstellt');
+    console.log('✅ Indizes erstellt');
 
     // Schema-Rechte vergeben
     await dbClient.query(`
@@ -109,6 +131,14 @@ const initDatabase = async () => {
     console.log(`   Datenbank: ${process.env.DB_NAME}`);
     console.log(`   User: ${process.env.DB_USER}`);
     console.log(`   Host: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+    console.log('');
+    console.log('📝 Verfügbare Felder:');
+    console.log('   ✅ Basis-Immobiliendaten');
+    console.log('   ✅ Finanzielle Kennzahlen');
+    console.log('   ✅ Steuerliche Berechnung');
+    console.log('   ✅ Objekt-Details (Zimmer, m², etc.)');
+    console.log('   ✅ Adressdaten (Strasse, PLZ, Ort)');
+    console.log('   ✅ Ausstattungsmerkmale (Balkon, Garten, etc.)');
     console.log('');
     process.exit(0);
 
